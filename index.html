@@ -102,9 +102,9 @@ function loadReviewsJsonp() {
     document.head.appendChild(script);
   });
 } 
-if(API_URL.startsWith("https://script.google.com/")){try{const res=await fetch(API_URL+"?action=list",{cache:"no-store"});if(!res.ok)throw new Error("API 응답 오류");const data=await res.json();if(!data.ok)throw new Error(data.error||"데이터를 읽을 수 없습니다.");allReviews=(data.reviews||[]).map(normalize).filter(r=>r.title&&r.review);$("status").textContent="Google Sheets 데이터와 연결되었습니다.";}catch(err){allReviews=DEMO.map(normalize);$("status").textContent="실제 데이터 연결에 실패해 예시 리뷰를 표시 중입니다. Apps Script 배포 권한과 URL을 확인하세요.";}}else{allReviews=DEMO.map(normalize);$("status").textContent="미리보기 모드입니다. 실제 리뷰를 보려면 Apps Script URL을 연결하세요.";}
+if(API_URL.startsWith("https://script.google.com/")){try{const data=await loadReviewsJsonp();allReviews=(data.reviews||[]).map(normalize).filter(r=>r.title&&r.review);$("status").textContent="Google Sheets 데이터와 연결되었습니다.";}catch(err){console.error("FILM LOG 리뷰 연결 오류:",err);allReviews=DEMO.map(normalize);$("status").textContent="실제 데이터 연결에 실패했습니다: "+(err.message||err)+". Apps Script 배포와 callback 응답을 확인하세요.";}}else{allReviews=DEMO.map(normalize);$("status").textContent="미리보기 모드입니다. 실제 리뷰를 보려면 Apps Script URL을 연결하세요.";}
  renderStats();renderMovies();renderReviews();}
 $("search").addEventListener("input",renderMovies);$("sort").addEventListener("change",renderMovies);$("methodFilter").addEventListener("change",renderReviews);$("closeModal").addEventListener("click",()=>$("modal").classList.remove("open"));$("modal").addEventListener("click",e=>{if(e.target===$("modal"))$("modal").classList.remove("open")});document.addEventListener("keydown",e=>{if(e.key==="Escape")$("modal").classList.remove("open")});load();
 </script>
 </body>
-</html>
+</html> 
